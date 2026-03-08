@@ -1,14 +1,26 @@
 using FluentValidation;
-using Harmonix.Shared;
-using Harmonix.Shared.Data;
-using Harmonix.Shared.Middlewares;
-using Harmonix.Shared.Security;
+using Harmonix.Application.Common;
+using Harmonix.Infrastructure;
+using Harmonix.Infrastructure.Auth;
+using Harmonix.Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:4200")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
+});
 
 var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JwtSettings>()!;
 
@@ -25,7 +37,7 @@ builder.Services.AddShared();
 
 builder.Services.Scan(scan => scan
     .FromAssemblyOf<Program>()
-    .AddClasses(classes => classes.Where(type => type.Name.EndsWith("Service")))
+    .AddClasses(c => c.AssignableTo<IHandler>())
     .AsSelf()
     .WithScopedLifetime());
 
@@ -53,8 +65,8 @@ builder.Services
 
 var app = builder.Build();
 
-app.UseMiddleware<DomainExceptionMiddleware>();
 app.UseHttpsRedirection();
+app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
