@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Harmonix.Migrations
 {
     [DbContext(typeof(HarmonixDbContext))]
-    [Migration("20260108143330_AddCompanyIsActive")]
-    partial class AddCompanyIsActive
+    [Migration("20260211004408_AddCompanyIdToRefreshToken")]
+    partial class AddCompanyIdToRefreshToken
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace Harmonix.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Harmonix.Shared.Models.Company", b =>
+            modelBuilder.Entity("Harmonix.Shared.Models.Companies.Company", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -72,7 +72,7 @@ namespace Harmonix.Migrations
 
                     b.HasIndex("Alias")
                         .IsUnique()
-                        .HasDatabaseName("ux_companies_alias");
+                        .HasDatabaseName("idx_companies_alias");
 
                     b.ToTable("companies", (string)null);
                 });
@@ -83,6 +83,10 @@ namespace Harmonix.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("id");
+
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("datetimeoffset")
@@ -111,20 +115,23 @@ namespace Harmonix.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ExpiresAt")
-                        .HasDatabaseName("ix_refresh_tokens_expires_at");
+                    b.HasIndex("CompanyId")
+                        .HasDatabaseName("idx_refresh_tokens_company_id");
 
-                    b.HasIndex("Token")
-                        .IsUnique()
-                        .HasDatabaseName("ux_refresh_tokens_token");
+                    b.HasIndex("ExpiresAt")
+                        .HasDatabaseName("idx_refresh_tokens_expires_at");
 
                     b.HasIndex("UserId")
-                        .HasDatabaseName("ix_refresh_tokens_user_id");
+                        .HasDatabaseName("idx_refresh_tokens_user_id");
+
+                    b.HasIndex("Token", "CompanyId")
+                        .IsUnique()
+                        .HasDatabaseName("idx_refresh_tokens_token_company");
 
                     b.ToTable("refresh_tokens", (string)null);
                 });
 
-            modelBuilder.Entity("Harmonix.Shared.Models.User", b =>
+            modelBuilder.Entity("Harmonix.Shared.Models.Users.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -179,14 +186,14 @@ namespace Harmonix.Migrations
 
                     b.HasIndex("Email")
                         .IsUnique()
-                        .HasDatabaseName("ux_users_email");
+                        .HasDatabaseName("idx_users_email");
 
                     b.ToTable("users", (string)null);
                 });
 
             modelBuilder.Entity("Harmonix.Shared.Models.RefreshToken", b =>
                 {
-                    b.HasOne("Harmonix.Shared.Models.User", "User")
+                    b.HasOne("Harmonix.Shared.Models.Users.User", "User")
                         .WithMany("RefreshTokens")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -195,9 +202,9 @@ namespace Harmonix.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Harmonix.Shared.Models.User", b =>
+            modelBuilder.Entity("Harmonix.Shared.Models.Users.User", b =>
                 {
-                    b.HasOne("Harmonix.Shared.Models.Company", "Company")
+                    b.HasOne("Harmonix.Shared.Models.Companies.Company", "Company")
                         .WithMany("Users")
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -206,12 +213,12 @@ namespace Harmonix.Migrations
                     b.Navigation("Company");
                 });
 
-            modelBuilder.Entity("Harmonix.Shared.Models.Company", b =>
+            modelBuilder.Entity("Harmonix.Shared.Models.Companies.Company", b =>
                 {
                     b.Navigation("Users");
                 });
 
-            modelBuilder.Entity("Harmonix.Shared.Models.User", b =>
+            modelBuilder.Entity("Harmonix.Shared.Models.Users.User", b =>
                 {
                     b.Navigation("RefreshTokens");
                 });
