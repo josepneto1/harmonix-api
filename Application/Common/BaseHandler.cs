@@ -21,7 +21,7 @@ public abstract class BaseHandler<TRequest, TResponse> : IHandler
     {
         _validator = validator;
     }
-    public async Task<Result<TResponse>> ExecuteAsync(TRequest request, CancellationToken ct)
+    public async Task<Result<TResponse>> ExecuteAsync(TRequest request, CancellationToken ct = default)
     {
         if (_validator is not null)
         {

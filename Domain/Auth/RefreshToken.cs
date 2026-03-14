@@ -1,16 +1,18 @@
-using Harmonix.Domain.Common;
 using Harmonix.Domain.Users;
 
 namespace Harmonix.Domain.Auth;
 
-public class RefreshToken : BaseEntity
+public class RefreshToken
 {
+    public Guid Id { get; private set; }
     public Guid UserId { get; private set; }
     public Guid CompanyId { get; set; }
     public string Token { get; private set; } = null!;
     public DateTime ExpiresAt { get; private set; }
     public DateTime? RevokedAt { get; private set; }
     public DateTimeOffset CreatedAt { get; private set; }
+    public bool Removed { get; private set; } = false;
+
 
     public User User { get; private set; } = null!;
 
@@ -18,7 +20,7 @@ public class RefreshToken : BaseEntity
 
     public RefreshToken(Guid userId, Guid companyId, string token, DateTime expiresAt, string? deviceInfo = null)
     {
-        Id = Guid.NewGuid();
+        Id = Guid.CreateVersion7();
         UserId = userId;
         CompanyId = companyId;
         Token = token;
@@ -33,6 +35,6 @@ public class RefreshToken : BaseEntity
     public void Revoke()
     {
         RevokedAt = DateTime.UtcNow;
-        Remove();
+        Removed = true;
     }
 }

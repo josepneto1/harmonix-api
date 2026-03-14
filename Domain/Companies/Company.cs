@@ -8,8 +8,6 @@ public class Company : BaseEntity
 {
     public string Name { get; private set; } = null!;
     public Alias Alias { get; private set; } = null!;
-    public DateTimeOffset CreatedAt { get; init; }
-    public DateTimeOffset? UpdatedAt { get; private set; }
     public DateTimeOffset ExpirationDate { get; private set; }
     public bool IsActive { get; private set; }
 
@@ -19,10 +17,9 @@ public class Company : BaseEntity
 
     private Company(string name, Alias alias, DateTimeOffset expirationDate)
     {
-        Id = Guid.NewGuid();
+        Id = GenerateNewId();
         Name = name;
         Alias = alias;
-        CreatedAt = DateTimeOffset.UtcNow;
         ExpirationDate = expirationDate;
         IsActive = true;
     }
@@ -74,21 +71,12 @@ public class Company : BaseEntity
             ExpirationDate = expirationDate.Value;
         }
 
-        UpdatedAt = DateTimeOffset.UtcNow;
         return Result.Success();
     }
 
-    public void Deactivate()
-    {
-        IsActive = false;
-        UpdatedAt = DateTimeOffset.UtcNow;
-    }
+    public void Deactivate() => IsActive = false;
 
-    public void Activate()
-    {
-        IsActive = true;
-        UpdatedAt = DateTimeOffset.UtcNow;
-    }
+    public void Activate() => IsActive = true;
 
     private static bool IsValidName(string name)
     {
