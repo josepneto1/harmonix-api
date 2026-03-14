@@ -13,9 +13,6 @@ public class User : BaseEntity
     public Email Email { get; private set; } = null!;
     public string PasswordHash { get; private set; } = null!;
     public Role Role { get; private set; }
-    public DateTimeOffset CreatedAt { get; init; }
-    public DateTimeOffset? UpdatedAt { get; private set; }
-
     public Company Company { get; private set; } = null!;
     public List<RefreshToken> RefreshTokens { get; private set; } = new List<RefreshToken>();
 
@@ -34,7 +31,6 @@ public class User : BaseEntity
         Email = Email.Create(email);
         PasswordHash = passwordHash;
         Role = role;
-        CreatedAt = DateTimeOffset.UtcNow;
     }
 
     public void Update(string? name, string? email, Role? role)
@@ -47,7 +43,5 @@ public class User : BaseEntity
 
         if (role is Role r)
             Role = r;
-
-        UpdatedAt = DateTimeOffset.UtcNow;
     }
 }

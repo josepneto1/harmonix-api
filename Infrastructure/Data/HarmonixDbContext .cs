@@ -1,4 +1,5 @@
 ﻿using Harmonix.Domain.Auth;
+using Harmonix.Domain.Common;
 using Harmonix.Domain.Companies;
 using Harmonix.Domain.Users;
 using Harmonix.Infrastructure.Data.DbConfig;
@@ -24,5 +25,31 @@ public class HarmonixDbContext : DbContext
             .HasQueryFilter(c => c.IsActive);
 
         base.OnModelCreating(modelBuilder);
+    }
+
+    public override int SaveChanges()
+    {
+        UpdateTimestamps();
+        return base.SaveChanges();
+    }
+
+    public override Task<int> SaveChangesAsync(CancellationToken ct = default)
+    {
+        UpdateTimestamps();
+        return base.SaveChangesAsync(ct);
+    }
+
+    private void UpdateTimestamps()
+    {
+        var entries = ChangeTracker.Entries<BaseEntity>();
+
+        foreach (var entry in entries)
+        {
+            if (entry.State == EntityState.Added)
+                entry.Entity.SetCreated();
+
+            if (entry.State == EntityState.Modified)
+                entry.Entity.SetUpdated();
+        }
     }
 }
