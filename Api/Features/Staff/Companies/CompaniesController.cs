@@ -17,7 +17,7 @@ public class CompaniesController : ControllerBase
 {
     [HttpPost("create")]
     public async Task<IActionResult> CreateCompany(
-        [FromBody] CreateCompanyRequest request, 
+        [FromBody] CreateCompanyRequest request,
         CreateCompanyHandler handler,
         CancellationToken ct)
     {
@@ -33,9 +33,12 @@ public class CompaniesController : ControllerBase
     }
 
     [HttpGet("list")]
-    public async Task<IActionResult> ListCompanies(ListCompaniesHandler handler, CancellationToken ct)
+    public async Task<IActionResult> ListCompanies(
+        [FromQuery] ListCompaniesRequest request,
+        ListCompaniesHandler handler,
+        CancellationToken ct)
     {
-        var result = await handler.ExecuteAsync(ct);
+        var result = await handler.ExecuteAsync(request, ct);
         return this.GetResult(result);
     }
 
@@ -50,13 +53,13 @@ public class CompaniesController : ControllerBase
     }
 
     [HttpDelete("delete/{id:guid}")]
-    public async Task<IActionResult> DeleteCompany(Guid id, DeleteCompanyHandler handler,CancellationToken ct)
+    public async Task<IActionResult> DeleteCompany(Guid id, DeleteCompanyHandler handler, CancellationToken ct)
     {
         var result = await handler.ExecuteAsync(id, ct);
         return this.GetResult(result);
     }
 
-    [HttpPut("changeStatus")]
+    [HttpPatch("changeStatus")]
     public async Task<IActionResult> SetCompanyStatus(
         [FromBody] SetCompanyStatusRequest request,
         SetCompanyStatusHandler handler,
