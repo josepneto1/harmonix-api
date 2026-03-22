@@ -20,7 +20,7 @@ public class ListCompaniesHandler : BaseHandler<ListCompaniesRequest, ListCompan
         var page = request.NormalizedPage;
         var pageSize = request.NormalizedPageSize;
 
-        var query = _context.Companies.AsNoTracking();
+        var query = _context.Companies.AsNoTracking().IgnoreQueryFilters();
 
         if (!string.IsNullOrWhiteSpace(request.Search))
         {
@@ -41,7 +41,8 @@ public class ListCompaniesHandler : BaseHandler<ListCompaniesRequest, ListCompan
                 c.Name,
                 c.Alias.Value,
                 c.CreatedAt,
-                c.ExpirationDate
+                c.ExpirationDate,
+                c.IsActive
             ))
             .ToListAsync(ct);
 
@@ -108,5 +109,6 @@ public record CompanyView(
     string Name,
     string Alias,
     DateTimeOffset CreatedAt,
-    DateTimeOffset ExpirationDate
+    DateTimeOffset ExpirationDate,
+    bool IsActive
 );
