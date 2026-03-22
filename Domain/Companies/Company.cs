@@ -42,7 +42,7 @@ public class Company : BaseEntity
         return Result<Company>.Success(company);
     }
 
-    public Result Update(string? name, string? alias, DateTimeOffset? expirationDate)
+    public Result Update(string? name, Alias? alias, DateTimeOffset? expirationDate)
     {
         name = name?.Trim();
 
@@ -55,13 +55,7 @@ public class Company : BaseEntity
         }
 
         if (alias is not null)
-        {
-            var aliasResult = Alias.Create(alias);
-            if (aliasResult.IsFailure)
-                return Result.Fail(aliasResult.Error);
-
-            Alias = aliasResult.Value!;
-        }
+            Alias = alias;
 
         if (expirationDate is not null)
         {

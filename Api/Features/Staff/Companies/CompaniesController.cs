@@ -15,16 +15,6 @@ namespace Harmonix.Api.Features.Staff.Companies;
 [Authorize(Roles = "SysAdmin")]
 public class CompaniesController : ControllerBase
 {
-    [HttpPost("create")]
-    public async Task<IActionResult> CreateCompany(
-        [FromBody] CreateCompanyRequest request,
-        CreateCompanyHandler handler,
-        CancellationToken ct)
-    {
-        var result = await handler.ExecuteAsync(request, ct);
-        return this.GetResult(result);
-    }
-
     [HttpGet("company/{id:guid}")]
     public async Task<IActionResult> GetCompanyById(Guid id, GetCompanyByIdHandler handler, CancellationToken ct)
     {
@@ -42,30 +32,31 @@ public class CompaniesController : ControllerBase
         return this.GetResult(result);
     }
 
-    [HttpPatch("update")]
-    public async Task<IActionResult> UpdateCompany(
-        [FromBody] UpdateCompanyRequest request,
-        UpdateCompanyHandler handler,
-        CancellationToken ct)
+    [HttpPost("create")]
+    public async Task<IActionResult> CreateCompany([FromBody] CreateCompanyRequest request, CreateCompanyHandler handler)
     {
-        var result = await handler.ExecuteAsync(request, ct);
+        var result = await handler.ExecuteAsync(request);
+        return this.GetResult(result);
+    }
+
+    [HttpPatch("update")]
+    public async Task<IActionResult> UpdateCompany([FromBody] UpdateCompanyRequest request, UpdateCompanyHandler handler)
+    {
+        var result = await handler.ExecuteAsync(request);
         return this.GetResult(result);
     }
 
     [HttpDelete("delete/{id:guid}")]
-    public async Task<IActionResult> DeleteCompany(Guid id, DeleteCompanyHandler handler, CancellationToken ct)
+    public async Task<IActionResult> DeleteCompany(Guid id, DeleteCompanyHandler handler)
     {
-        var result = await handler.ExecuteAsync(id, ct);
+        var result = await handler.ExecuteAsync(id);
         return this.GetResult(result);
     }
 
     [HttpPatch("changeStatus")]
-    public async Task<IActionResult> SetCompanyStatus(
-        [FromBody] SetCompanyStatusRequest request,
-        SetCompanyStatusHandler handler,
-        CancellationToken ct)
+    public async Task<IActionResult> SetCompanyStatus([FromBody] SetCompanyStatusRequest request, SetCompanyStatusHandler handler)
     {
-        var result = await handler.ExecuteAsync(request, ct);
+        var result = await handler.ExecuteAsync(request);
         return this.GetResult(result);
     }
 }

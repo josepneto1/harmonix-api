@@ -12,11 +12,11 @@ public sealed class AliasUniqueChecker : IAliasUniqueChecker
     {
         _context = context;
     }
-    public async Task<bool> IsUniqueAsync(Alias alias, CancellationToken ct)
+    public async Task<bool> IsUniqueAsync(Alias alias)
     {
         return !await _context.Companies
             .IgnoreQueryFilters()
             .AsNoTracking()
-            .AnyAsync(c => c.Alias == alias, ct);
+            .AnyAsync(c => c.Alias == alias);
     }
 }

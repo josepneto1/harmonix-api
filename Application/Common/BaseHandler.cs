@@ -33,5 +33,5 @@ public abstract class BaseHandler<TRequest, TResponse> : IHandler
         return await HandleAsync(request, ct);
     }
 
-    protected abstract Task<Result<TResponse>> HandleAsync(TRequest request, CancellationToken ct);
+    protected abstract Task<Result<TResponse>> HandleAsync(TRequest request, CancellationToken ct = default);
 }
