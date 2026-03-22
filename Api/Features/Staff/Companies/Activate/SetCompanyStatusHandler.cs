@@ -19,7 +19,7 @@ public sealed class SetCompanyStatusHandler : BaseHandler<SetCompanyStatusReques
     {
         var company = await _context.Companies
             .IgnoreQueryFilters()
-            .FirstOrDefaultAsync(c => c.Id == request.CompanyId && !c.Removed, ct);
+            .FirstOrDefaultAsync(c => c.Id == request.CompanyId && !c.Removed);
 
         if (company is null)
             return Result<bool>.Fail(CommonError.NotFound);
@@ -27,7 +27,7 @@ public sealed class SetCompanyStatusHandler : BaseHandler<SetCompanyStatusReques
         if (request.IsActive) company.Activate();
         else company.Deactivate();
 
-        await _context.SaveChangesAsync(ct);
+        await _context.SaveChangesAsync();
 
         return Result<bool>.Success(true);
     }

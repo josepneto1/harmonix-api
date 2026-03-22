@@ -12,12 +12,10 @@ public sealed class EmailUniqueChecker : IEmailUniqueChecker
     {
         _context = context;
     }
-    public async Task<bool> IsUniqueAsync(Email email, CancellationToken ct)
+    public async Task<bool> IsUniqueAsync(Email email)
     {
         return !await _context.Users
             .AsNoTracking()
-            .AnyAsync(u =>
-                u.Email == email,
-                ct);
+            .AnyAsync(u => u.Email == email);
     }
 }

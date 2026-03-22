@@ -18,24 +18,24 @@ public class DeleteCompanyHandler : BaseHandler<Guid, bool>
     protected override async Task<Result<bool>> HandleAsync(Guid id, CancellationToken ct)
     {
         var company = await _context.Companies
-            .FirstOrDefaultAsync(c => c.Id == id && !c.Removed, ct);
+            .FirstOrDefaultAsync(c => c.Id == id && !c.Removed);
 
         if (company is null)
             return Result<bool>.Fail(CommonError.NotFound);
 
-        company.Remove();
         company.Deactivate();
+        company.Remove();
 
         var users = await _context.Users
             .Where(u => u.CompanyId == company.Id && !u.Removed)
-            .ToListAsync(ct);
+            .ToListAsync();
 
         foreach (var user in users)
         {
             user.Remove();
         }
 
-        await _context.SaveChangesAsync(ct);
+        await _context.SaveChangesAsync();
 
         return Result<bool>.Success(true);
     }

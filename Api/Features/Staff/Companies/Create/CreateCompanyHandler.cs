@@ -35,14 +35,13 @@ public class CreateCompanyHandler : BaseHandler<CreateCompanyRequest, CreateComp
 
         var company = companyResult.Value!;
 
-        var isUnique = await _aliasChecker.IsUniqueAsync(company.Alias, ct);
-
+        var isUnique = await _aliasChecker.IsUniqueAsync(company.Alias);
         if (!isUnique)
             return Result<CreateCompanyResponse>.Fail(CompanyErrors.AliasAlreadyExists);
 
         _context.Companies.Add(company);
 
-        await _context.SaveChangesAsync(ct);
+        await _context.SaveChangesAsync();
 
         var response = new CreateCompanyResponse(
             company.Id,

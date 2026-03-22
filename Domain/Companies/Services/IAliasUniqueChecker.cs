@@ -4,5 +4,5 @@ namespace Harmonix.Domain.Companies.Services;
 
 public interface IAliasUniqueChecker
 {
-    Task<bool> IsUniqueAsync(Alias alias, CancellationToken ct);
+    Task<bool> IsUniqueAsync(Alias alias);
 }
