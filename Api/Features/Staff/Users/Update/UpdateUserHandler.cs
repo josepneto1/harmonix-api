@@ -37,7 +37,7 @@ public class UpdateUserHandler : BaseHandler<UpdateUserRequest, UpdateUserRespon
             var email = Email.Create(request.Email);
 
             var isUnique = await _emailChecker
-                .IsUniqueAsync(email, ct);
+                .IsUniqueAsync(email);
 
             if (!isUnique)
                 return Result<UpdateUserResponse>.Fail(CommonError.EmailAlreadyExists);

@@ -40,7 +40,7 @@ public class CreateUserHandler : BaseHandler<CreateUserRequest, CreateUserRespon
 
         var email = Email.Create(request.Email);
 
-        var isUnique = await _emailChecker.IsUniqueAsync(email, ct);
+        var isUnique = await _emailChecker.IsUniqueAsync(email);
 
         if (!isUnique)
             return Result<CreateUserResponse>.Fail(CommonError.EmailAlreadyExists);

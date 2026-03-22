@@ -15,7 +15,6 @@ using Harmonix.Infrastructure.Data;
         private readonly HarmonixDbContext _context;
         private readonly IAliasUniqueChecker _aliasChecker;
 
-
         public UpdateCompanyHandler(
             HarmonixDbContext context,
             IValidator<UpdateCompanyRequest> validator,
