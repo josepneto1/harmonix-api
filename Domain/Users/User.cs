@@ -1,5 +1,7 @@
 ﻿using Harmonix.Domain.Auth;
 using Harmonix.Domain.Common;
+using Harmonix.Domain.Common.Errors;
+using Harmonix.Domain.Common.Validations;
 using Harmonix.Domain.Common.ValueObjects;
 using Harmonix.Domain.Companies;
 using Harmonix.Domain.Users.Enums;
@@ -18,19 +20,35 @@ public class User : BaseEntity
 
     protected User() { }
 
-    public User(
+    private User(
         Guid companyId,
         string name,
-        string email,
-        string passwordHash,
+        Email email,
         Role role)
     {
-        Id = Guid.NewGuid();
+        Id = GenerateNewId();
         CompanyId = companyId;
         Name = name;
-        Email = Email.Create(email);
-        PasswordHash = passwordHash;
+        Email = email;
         Role = role;
+    }
+
+    public static Result<User> Create(Guid companyId, string name, string email, Role role)
+    {
+        name = name.Trim();
+
+        if (!Validate.IsValidText(name, 3, 100))
+            return Result<User>.Fail(CommonErrors.InvalidName);
+
+        var emailResult = Email.Create(email);
+        if (emailResult.IsFailure)
+            return Result<User>.Fail(emailResult.Error);
+
+        if (!Enum.IsDefined(role))
+            return Result<User>.Fail(CommonErrors.InvalidRole);
+
+        var user = new User(companyId, name, emailResult.Data!, role);
+        return Result<User>.Success(user);
     }
 
     public void Update(string? name, string? email, Role? role)
@@ -39,9 +57,11 @@ public class User : BaseEntity
             Name = name.Trim();
 
         if (email is not null)
-            Email = Email.Create(email);
+            Email = Email.Create(email).Data!;
 
         if (role is Role r)
             Role = r;
     }
+
+    public void SetPasswordHash(string hash) => PasswordHash = hash;
 }

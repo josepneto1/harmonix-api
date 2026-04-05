@@ -11,8 +11,8 @@ public static class DependencyInjection
     {
         services.AddScoped<IEmailUniqueChecker, EmailUniqueChecker>();
         services.AddScoped<IAliasUniqueChecker, AliasUniqueChecker>();
-        
-        services.AddScoped<PasswordHasher>();
+
+        services.AddSingleton<IPasswordHasher, BcryptPasswordHasher>();
         services.AddScoped<JwtTokenProvider>();
 
         return services;

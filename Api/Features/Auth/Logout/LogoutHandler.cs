@@ -1,6 +1,6 @@
 using Harmonix.Application.Common;
-using Harmonix.Application.Common.Errors;
-using Harmonix.Application.Common.Results;
+using Harmonix.Domain.Common.Errors;
+using Harmonix.Domain.Common;
 using Harmonix.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,7 +22,7 @@ public class LogoutHandler : BaseHandler<LogoutRequest, LogoutResponse>
             .FirstOrDefaultAsync(rt => rt.Token == request.RefreshToken, ct);
 
         if (refreshToken is null)
-            return Result<LogoutResponse>.Fail(CommonError.InternalError);
+            return Result<LogoutResponse>.Fail(CommonErrors.InternalError);
 
         if (refreshToken.IsRevoked)
             return Result<LogoutResponse>.Success(new LogoutResponse(true, "Token already revoked"));

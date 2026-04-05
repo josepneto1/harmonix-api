@@ -1,4 +1,5 @@
-﻿using Harmonix.Application.Common.Results;
+﻿using Harmonix.Domain.Common;
+using Harmonix.Domain.Common.Errors.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Harmonix.Api.Common.Extensions;
@@ -10,25 +11,23 @@ public static class ResultExtensions
         if (result.IsSuccess)
         {
             var method = controller.HttpContext.Request.Method;
-
             return method switch
             {
-                "POST" => controller.StatusCode(StatusCodes.Status201Created, result.Value),
+                "POST" => controller.StatusCode(StatusCodes.Status201Created, result.Data),
                 "DELETE" => controller.StatusCode(StatusCodes.Status204NoContent),
-                "PUT" or "PATCH" => controller.StatusCode(StatusCodes.Status200OK, result.Value),
-                "GET" => controller.StatusCode(StatusCodes.Status200OK, result.Value),
-                _ => controller.StatusCode(StatusCodes.Status200OK, result.Value)
+                "PUT" or "PATCH" => controller.StatusCode(StatusCodes.Status200OK, result.Data),
+                "GET" => controller.StatusCode(StatusCodes.Status200OK, result.Data),
+                _ => controller.StatusCode(StatusCodes.Status200OK, result.Data)
             };
         }
 
         var error = result.Error;
         return controller.StatusCode(
-            (int)error.Status,
+            MapToHttpStatusCode(error.Type),
             new
             {
                 error = error.Code,
                 message = error.Message,
-                details = error.Details
             });
     }
 
@@ -39,28 +38,24 @@ public static class ResultExtensions
 
         var error = result.Error;
         return controller.StatusCode(
-            (int)error.Status,
+            MapToHttpStatusCode(error.Type),
             new
             {
                 error = error.Code,
                 message = error.Message,
-                details = error.Details
             });
     }
 
-    //public static IActionResult GetCreatedResult<T>(this ControllerBase controller, Result<T> result)
-    //{
-    //    if (result.IsSuccess)
-    //        return controller.StatusCode(StatusCodes.Status201Created, result.Value);
-
-    //    var error = result.Error;
-    //    return controller.StatusCode(
-    //        (int)error.Status,
-    //        new
-    //        {
-    //            error = error.Code,
-    //            message = error.Message,
-    //            details = error.Details
-    //        });
-    //}
+    private static int MapToHttpStatusCode(ErrorType errorType) => errorType switch
+    {
+        ErrorType.Failure => StatusCodes.Status400BadRequest,
+        ErrorType.Validation => StatusCodes.Status400BadRequest,
+        ErrorType.BadRequest => StatusCodes.Status400BadRequest,
+        ErrorType.Unauthorized => StatusCodes.Status401Unauthorized,
+        ErrorType.Forbidden => StatusCodes.Status403Forbidden,
+        ErrorType.NotFound => StatusCodes.Status404NotFound,
+        ErrorType.Conflict => StatusCodes.Status409Conflict,
+        ErrorType.InternalError => StatusCodes.Status500InternalServerError,
+        _ => StatusCodes.Status500InternalServerError
+    };
 }

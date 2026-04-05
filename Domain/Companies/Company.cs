@@ -1,4 +1,6 @@
 ﻿using Harmonix.Domain.Common;
+using Harmonix.Domain.Common.Errors;
+using Harmonix.Domain.Common.Validations;
 using Harmonix.Domain.Companies.ValueObjects;
 using Harmonix.Domain.Users;
 
@@ -28,8 +30,8 @@ public class Company : BaseEntity
     {
         name = name.Trim();
 
-        if (!IsValidName(name))
-            return Result<Company>.Fail(CompanyErrors.InvalidName);
+        if (!Validate.IsValidText(name, 3, 100))
+            return Result<Company>.Fail(CommonErrors.InvalidName);
 
         if (!IsValidExpirationDate(expirationDate))
             return Result<Company>.Fail(CompanyErrors.InvalidExpirationDate);
@@ -38,7 +40,7 @@ public class Company : BaseEntity
         if (aliasResult.IsFailure)
             return Result<Company>.Fail(aliasResult.Error);
 
-        var company = new Company(name, aliasResult.Value!, expirationDate);
+        var company = new Company(name, aliasResult.Data!, expirationDate);
         return Result<Company>.Success(company);
     }
 
@@ -48,8 +50,8 @@ public class Company : BaseEntity
 
         if (name is not null)
         {
-            if (!IsValidName(name))
-                return Result.Fail(CompanyErrors.InvalidName);
+            if (!Validate.IsValidText(name, 3, 100))
+                return Result.Fail(CommonErrors.InvalidName);
 
             Name = name;
         }
@@ -71,14 +73,6 @@ public class Company : BaseEntity
     public void Deactivate() => IsActive = false;
 
     public void Activate() => IsActive = true;
-
-    private static bool IsValidName(string name)
-    {
-        if (string.IsNullOrWhiteSpace(name))
-            return false;
-
-        return name.Length is >= 3 and <= 100;
-    }
 
     private static bool IsValidExpirationDate(DateTimeOffset? expirationDate) => expirationDate > DateTimeOffset.UtcNow;
 }

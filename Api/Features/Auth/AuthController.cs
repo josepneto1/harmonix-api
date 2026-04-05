@@ -18,7 +18,7 @@ public class AuthController : ControllerBase
         if (result.IsFailure)
             return this.GetResult(result);
 
-        var response = result.Value!;
+        var response = result.Data!;
 
         Response.Cookies.Append("refreshToken", response.RefreshToken, new CookieOptions
         {
@@ -46,7 +46,7 @@ public class AuthController : ControllerBase
         if (!result.IsSuccess)
             return this.GetResult(result);
 
-        var response = result.Value!;
+        var response = result.Data!;
 
         Response.Cookies.Append("refreshToken", response.RefreshToken, new CookieOptions
         {

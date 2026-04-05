@@ -1,7 +1,7 @@
 ﻿using Harmonix.Application.Common;
-using Harmonix.Application.Common.Errors;
-using Harmonix.Application.Common.Results;
+using Harmonix.Domain.Common.Errors;
 using Harmonix.Domain.Auth;
+using Harmonix.Domain.Common;
 using Harmonix.Infrastructure.Auth;
 using Harmonix.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -33,17 +33,17 @@ public class RefreshTokenHandler : BaseHandler<RefreshTokenRequest, RefreshToken
             .FirstOrDefaultAsync(ct);
 
         if (refreshToken is null || !refreshToken.IsValid)
-            return Result<RefreshTokenResponse>.Fail(AuthError.InvalidRefreshToken);
+            return Result<RefreshTokenResponse>.Fail(AuthErrors.InvalidRefreshToken);
 
         refreshToken.Revoke();
 
         var user = refreshToken.User;
 
         if (user is null || !user.Company.IsActive)
-            return Result<RefreshTokenResponse>.Fail(AuthError.InvalidRefreshToken);
+            return Result<RefreshTokenResponse>.Fail(AuthErrors.InvalidRefreshToken);
 
         if (user is null || !user.Company.IsActive)
-            return Result<RefreshTokenResponse>.Fail(AuthError.InvalidRefreshToken);
+            return Result<RefreshTokenResponse>.Fail(AuthErrors.InvalidRefreshToken);
 
         var (newAccessToken, accessExpiresAt) = _jwtTokenProvider.GenerateToken(user);
 

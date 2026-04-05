@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
-using Harmonix.Application.Common.Extensions;
-using Harmonix.Application.Common.Results;
+using Harmonix.Application.Extensions;
+using Harmonix.Domain.Common;
 
 namespace Harmonix.Application.Common;
 
