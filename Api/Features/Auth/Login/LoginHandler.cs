@@ -1,8 +1,8 @@
 ﻿using FluentValidation;
 using Harmonix.Application.Common;
-using Harmonix.Application.Common.Errors;
-using Harmonix.Application.Common.Results;
 using Harmonix.Domain.Auth;
+using Harmonix.Domain.Common;
+using Harmonix.Domain.Common.Errors;
 using Harmonix.Domain.Common.ValueObjects;
 using Harmonix.Infrastructure.Auth;
 using Harmonix.Infrastructure.Data;
@@ -14,13 +14,13 @@ public class LoginHandler : BaseHandler<LoginRequest, LoginResponse>
 { 
     private readonly HarmonixDbContext _context;
     private readonly JwtTokenProvider _jwtTokenProvider;
-    private readonly PasswordHasher _passwordHasher;
+    private readonly IPasswordHasher _passwordHasher;
     private readonly JwtSettings _jwtSettings;
 
     public LoginHandler(
         HarmonixDbContext context,
         JwtTokenProvider jwtTokenProvider,
-        PasswordHasher passwordHasher,
+        IPasswordHasher passwordHasher,
         JwtSettings jwtSettings)
     {
         _context = context;
@@ -31,20 +31,23 @@ public class LoginHandler : BaseHandler<LoginRequest, LoginResponse>
 
     protected override async Task<Result<LoginResponse>> HandleAsync(LoginRequest request, CancellationToken ct)
     {
-        var userEmail = Email.Create(request.Email);
+        var userEmailResult = Email.Create(request.Email);
+
+        if (userEmailResult.IsFailure)
+            return Result<LoginResponse>.Fail(userEmailResult.Error);
 
         var user = await _context.Users
             .AsNoTracking()
             .IgnoreQueryFilters()
             .Include(u => u.Company)
-            .FirstOrDefaultAsync(u => u.Email == userEmail, ct);
+            .FirstOrDefaultAsync(u => u.Email == userEmailResult.Data, ct);
 
         var passwordHash = user?.PasswordHash ?? _passwordHasher.FakeHash;
 
         var passwordValid = _passwordHasher.VerifyPassword(request.Password, passwordHash);
 
         if (user is null || !passwordValid || !user.Company.IsActive)
-            return Result<LoginResponse>.Fail(AuthError.InvalidCredentials);
+            return Result<LoginResponse>.Fail(AuthErrors.InvalidCredentials);
 
         var activeRefreshTokens = await _context.RefreshTokens
             .Where(rt =>

@@ -1,6 +1,6 @@
 ﻿using Harmonix.Application.Common;
-using Harmonix.Application.Common.Errors;
-using Harmonix.Application.Common.Results;
+using Harmonix.Domain.Common.Errors;
+using Harmonix.Domain.Common;
 using Harmonix.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,7 +22,7 @@ public sealed class SetCompanyStatusHandler : BaseHandler<SetCompanyStatusReques
             .FirstOrDefaultAsync(c => c.Id == request.CompanyId && !c.Removed);
 
         if (company is null)
-            return Result<bool>.Fail(CommonError.NotFound);
+            return Result<bool>.Fail(CommonErrors.NotFound);
 
         if (request.IsActive) company.Activate();
         else company.Deactivate();

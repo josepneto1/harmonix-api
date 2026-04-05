@@ -1,7 +1,7 @@
-﻿    using FluentValidation;
-    using Harmonix.Application.Common;
-    using Harmonix.Application.Common.Errors;
-    using Harmonix.Application.Common.Results;
+﻿using FluentValidation;
+using Harmonix.Application.Common;
+using Harmonix.Domain.Common.Errors;
+using Harmonix.Domain.Common;
 using Harmonix.Domain.Companies;
 using Harmonix.Domain.Companies.Services;
 using Harmonix.Domain.Companies.ValueObjects;
@@ -31,7 +31,7 @@ using Harmonix.Infrastructure.Data;
                 .FirstOrDefaultAsync(c => c.Id == request.Id && !c.Removed);
 
             if (company is null)
-                return Result<UpdateCompanyResponse>.Fail(CommonError.NotFound);
+                return Result<UpdateCompanyResponse>.Fail(CommonErrors.NotFound);
 
             Alias? alias = null;
 
@@ -41,7 +41,7 @@ using Harmonix.Infrastructure.Data;
                 if (aliasResult.IsFailure)
                     return Result<UpdateCompanyResponse>.Fail(aliasResult.Error);
 
-                alias = aliasResult.Value!;
+                alias = aliasResult.Data!;
 
                 if (alias != company.Alias)
                 {

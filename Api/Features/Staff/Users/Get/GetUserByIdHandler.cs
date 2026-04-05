@@ -1,6 +1,6 @@
 ﻿using Harmonix.Application.Common;
-using Harmonix.Application.Common.Errors;
-using Harmonix.Application.Common.Results;
+using Harmonix.Domain.Common.Errors;
+using Harmonix.Domain.Common;
 using Harmonix.Domain.Users.Enums;
 using Harmonix.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -32,7 +32,7 @@ public class GetUserByIdHandler : BaseHandler<Guid, GetUserByIdResponse>
             .FirstOrDefaultAsync(ct);
 
         if (user is null)
-            return Result<GetUserByIdResponse>.Fail(CommonError.NotFound);
+            return Result<GetUserByIdResponse>.Fail(CommonErrors.NotFound);
 
         return Result<GetUserByIdResponse>.Success(user);
     }

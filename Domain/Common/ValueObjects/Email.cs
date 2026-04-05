@@ -1,8 +1,10 @@
-﻿using System.Net.Mail;
+﻿using Harmonix.Domain.Common.Errors;
+using Harmonix.Domain.Common.Validations;
+using System.Net.Mail;
 
 namespace Harmonix.Domain.Common.ValueObjects;
 
-public sealed record Email
+public sealed record Email : IValueObject<Email, string>
 {
     public const int MaxLength = 255;
     public string Value { get; }
@@ -12,17 +14,14 @@ public sealed record Email
         Value = value;
     }
 
-    public static Email Create(string email)
+    public static Result<Email> Create(string email)
     {
-        //if (string.IsNullOrWhiteSpace(email))
-            //throw UserDomainException.InvalidEmail();
+        email = email?.Trim() ?? string.Empty;
 
-        email = email.Trim();
+        if (!Validate.IsValidText(email, minLength: null, MaxLength)|| !IsValid(email))
+            return Result<Email>.Fail(CommonErrors.InvalidEmail);
 
-        //if (email.Length > MaxLength || !IsValid(email))
-            //throw UserDomainException.InvalidEmail();
-
-        return new Email(email);
+        return Result<Email>.Success(new Email(email));
     }
 
     private static bool IsValid(string email)
@@ -37,4 +36,6 @@ public sealed record Email
             return false;
         }
     }
+
+    public static Email FromDbConfig(string value) => new(value);
 }

@@ -1,6 +1,6 @@
 ﻿using Harmonix.Application.Common;
-using Harmonix.Application.Common.Errors;
-using Harmonix.Application.Common.Results;
+using Harmonix.Domain.Common.Errors;
+using Harmonix.Domain.Common;
 using Harmonix.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,7 +21,7 @@ public class DeleteCompanyHandler : BaseHandler<Guid, bool>
             .FirstOrDefaultAsync(c => c.Id == id && !c.Removed);
 
         if (company is null)
-            return Result<bool>.Fail(CommonError.NotFound);
+            return Result<bool>.Fail(CommonErrors.NotFound);
 
         company.Deactivate();
         company.Remove();

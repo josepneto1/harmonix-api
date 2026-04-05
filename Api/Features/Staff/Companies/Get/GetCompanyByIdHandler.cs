@@ -1,6 +1,6 @@
 ﻿using Harmonix.Application.Common;
-using Harmonix.Application.Common.Errors;
-using Harmonix.Application.Common.Results;
+using Harmonix.Domain.Common.Errors;
+using Harmonix.Domain.Common;
 using Harmonix.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,7 +32,7 @@ public class GetCompanyByIdHandler : BaseHandler<Guid, GetCompanyByIdResponse>
             .FirstOrDefaultAsync(ct);
 
         if (company is null)
-            return Result<GetCompanyByIdResponse>.Fail(CommonError.NotFound);
+            return Result<GetCompanyByIdResponse>.Fail(CommonErrors.NotFound);
 
         return Result<GetCompanyByIdResponse>.Success(company);
     }

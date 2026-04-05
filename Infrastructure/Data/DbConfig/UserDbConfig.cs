@@ -18,7 +18,7 @@ public class UserDbConfig : IEntityTypeConfiguration<User>
         builder.Property(u => u.Name).HasColumnName("name").HasMaxLength(100).IsRequired();
         builder.Property(u => u.Email)
             .HasColumnName("email")
-            .HasConversion(email => email.Value, value => Email.Create(value))
+            .HasConversion(email => email.Value, value => Email.FromDbConfig(value))
             .HasMaxLength(255)
             .IsRequired();
         builder.Property(u => u.PasswordHash).HasColumnName("password_hash").HasMaxLength(500).IsRequired();

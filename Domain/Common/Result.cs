@@ -1,31 +1,33 @@
-﻿namespace Harmonix.Domain.Common;
+﻿using Harmonix.Domain.Common.Errors;
+
+namespace Harmonix.Domain.Common;
 
 public class Result
 {
     public bool IsSuccess { get; }
     public bool IsFailure => !IsSuccess;
-    public DomainError Error { get; }
+    public Error Error { get; }
 
-    protected Result(bool isSuccess, DomainError error)
+    protected Result(bool isSuccess, Error error)
     {
         IsSuccess = isSuccess;
         Error = error;
     }
 
-    public static Result Success() => new(true, DomainError.None);
-    public static Result Fail(DomainError error) => new(false, error);
+    public static Result Success() => new(true, Error.None);
+    public static Result Fail(Error error) => new(false, error);
 }
 
 public sealed class Result<T> : Result
 {
-    public T? Value { get; }
+    public T? Data { get; }
 
-    private Result(bool isSuccess, T? value, DomainError error)
+    private Result(bool isSuccess, T? data, Error error)
         : base(isSuccess, error)
     {
-        Value = value;
+        Data = data;
     }
 
-    public static Result<T> Success(T value) => new(true, value, DomainError.None);
-    public static new Result<T> Fail(DomainError error) => new(false, default, error);
+    public static Result<T> Success(T data) => new(true, data, Error.None);
+    public static new Result<T> Fail(Error error) => new(false, default, error);
 }

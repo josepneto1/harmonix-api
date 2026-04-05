@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using Harmonix.Application.Common;
-using Harmonix.Application.Common.Results;
+using Harmonix.Domain.Common;
 using Harmonix.Domain.Companies;
 using Harmonix.Domain.Companies.Services;
 using Harmonix.Infrastructure.Data;
@@ -30,10 +30,10 @@ public class CreateCompanyHandler : BaseHandler<CreateCompanyRequest, CreateComp
             request.ExpirationDate
         );
 
-        if (!companyResult.IsSuccess)
+        if (companyResult.IsFailure)
             return Result<CreateCompanyResponse>.Fail(companyResult.Error);
 
-        var company = companyResult.Value!;
+        var company = companyResult.Data!;
 
         var isUnique = await _aliasChecker.IsUniqueAsync(company.Alias);
         if (!isUnique)

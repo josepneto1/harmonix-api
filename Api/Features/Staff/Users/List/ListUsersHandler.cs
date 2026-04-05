@@ -1,5 +1,5 @@
 ﻿using Harmonix.Application.Common;
-using Harmonix.Application.Common.Results;
+using Harmonix.Domain.Common;
 using Harmonix.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 

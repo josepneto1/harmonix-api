@@ -1,6 +1,10 @@
-﻿namespace Harmonix.Domain.Users.ValueObjects;
+﻿using Harmonix.Domain.Common;
+using Harmonix.Domain.Common.Errors;
+using Harmonix.Domain.Common.Validations;
 
-public sealed record Password
+namespace Harmonix.Domain.Users.ValueObjects;
+
+public sealed record Password : IValueObject<Password, string>
 {
     public const int MinLength = 8;
     public const int MaxLength = 20;
@@ -11,16 +15,13 @@ public sealed record Password
         Value = value;
     }
 
-    public static Password Create(string password)
+    public static Result<Password> Create(string password)
     {
-        //if (string.IsNullOrEmpty(password))
-        //    throw UserDomainException.InvalidPassword();
+        if (!Validate.IsValidText(password, MinLength, MaxLength))
+            return Result<Password>.Fail(CommonErrors.InvalidParameters);
 
-        password = password.Trim();
-
-        //if (password.Length is < MinLength or > MaxLength)
-        //    throw UserDomainException.InvalidPassword();
-
-        return new Password(password);
+        return Result<Password>.Success(new Password(password));
     }
+
+    public static Password FromDbConfig(string value) => new(value);
 }

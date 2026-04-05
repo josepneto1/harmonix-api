@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using Harmonix.Application.Common;
-using Harmonix.Application.Common.Errors;
-using Harmonix.Application.Common.Results;
+using Harmonix.Domain.Common.Errors;
+using Harmonix.Domain.Common;
 using Harmonix.Domain.Common.Services;
 using Harmonix.Domain.Common.ValueObjects;
 using Harmonix.Infrastructure.Data;
@@ -30,17 +30,16 @@ public class UpdateUserHandler : BaseHandler<UpdateUserRequest, UpdateUserRespon
             .FirstOrDefaultAsync(u => u.Id == request.Id && !u.Removed, ct);
 
         if (user is null)
-            return Result<UpdateUserResponse>.Fail(CommonError.NotFound);
+            return Result<UpdateUserResponse>.Fail(CommonErrors.NotFound);
 
         if (request.Email is not null)
         {
             var email = Email.Create(request.Email);
 
-            var isUnique = await _emailChecker
-                .IsUniqueAsync(email);
+            var isUnique = await _emailChecker.IsUniqueAsync(email.Data!);
 
             if (!isUnique)
-                return Result<UpdateUserResponse>.Fail(CommonError.EmailAlreadyExists);
+                return Result<UpdateUserResponse>.Fail(CommonErrors.EmailAlreadyExists);
         }
 
         user.Update(request.Name, request.Email, request.Role);
