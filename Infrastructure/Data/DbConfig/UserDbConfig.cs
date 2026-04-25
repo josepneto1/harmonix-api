@@ -31,9 +31,6 @@ public class UserDbConfig : IEntityTypeConfiguration<User>
 
         builder.HasOne(u => u.Company).WithMany(c => c.Users).HasForeignKey(u => u.CompanyId);
 
-        builder.HasMany(u => u.RefreshTokens)
-            .WithOne(rt => rt.User)
-            .HasForeignKey(rt => rt.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
+        builder.HasMany(u => u.RefreshTokens).WithOne(rt => rt.User).HasForeignKey(rt => rt.UserId);
     }
 }

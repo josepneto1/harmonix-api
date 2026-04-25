@@ -6,17 +6,14 @@ namespace Harmonix.Domain.Common.ValueObjects;
 
 public sealed record Email : IValueObject<Email, string>
 {
-    public const int MaxLength = 255;
+    private const int MaxLength = 255;
     public string Value { get; }
 
-    public Email(string value)
-    {
-        Value = value;
-    }
+    private Email(string value) => Value = value;
 
     public static Result<Email> Create(string email)
     {
-        email = email?.Trim() ?? string.Empty;
+        email = email.Trim();
 
         if (!Validate.IsValidText(email, minLength: null, MaxLength)|| !IsValid(email))
             return Result<Email>.Fail(CommonErrors.InvalidEmail);

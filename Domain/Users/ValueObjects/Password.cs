@@ -6,14 +6,11 @@ namespace Harmonix.Domain.Users.ValueObjects;
 
 public sealed record Password : IValueObject<Password, string>
 {
-    public const int MinLength = 8;
-    public const int MaxLength = 20;
+    private const int MinLength = 8;
+    private const int MaxLength = 20;
     public string Value { get; }
 
-    public Password(string value)
-    {
-        Value = value;
-    }
+    private Password(string value) => Value = value;
 
     public static Result<Password> Create(string password)
     {

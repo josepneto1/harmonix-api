@@ -1,4 +1,5 @@
 ﻿using Harmonix.Domain.Common.Errors;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Harmonix.Domain.Common;
 
@@ -20,6 +21,11 @@ public class Result
 
 public sealed class Result<T> : Result
 {
+    [MemberNotNullWhen(returnValue: true, member: nameof(Data))]
+    public new bool IsSuccess => base.IsSuccess;
+
+    [MemberNotNullWhen(returnValue: false, member: nameof(Data))]
+    public new bool IsFailure => base.IsFailure;
     public T? Data { get; }
 
     private Result(bool isSuccess, T? data, Error error)

@@ -4,14 +4,11 @@ namespace Harmonix.Domain.Companies.ValueObjects;
 
 public sealed record Alias : IValueObject<Alias, string>
 {
-    public const int MinLength = 3;
-    public const int MaxLength = 30;
+    private const int MinLength = 3;
+    private const int MaxLength = 30;
     public string Value { get; }
 
-    private Alias(string value)
-    {
-        Value = value;
-    }
+    private Alias(string value) => Value = value;
 
     public static Result<Alias> Create(string alias)
     {

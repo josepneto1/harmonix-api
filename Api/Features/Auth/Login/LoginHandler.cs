@@ -40,35 +40,37 @@ public class LoginHandler : BaseHandler<LoginRequest, LoginResponse>
             .AsNoTracking()
             .IgnoreQueryFilters()
             .Include(u => u.Company)
-            .FirstOrDefaultAsync(u => u.Email == userEmailResult.Data, ct);
+            .FirstOrDefaultAsync(u => u.Email == userEmailResult.Data);
 
         var passwordHash = user?.PasswordHash ?? _passwordHasher.FakeHash;
 
         var passwordValid = _passwordHasher.VerifyPassword(request.Password, passwordHash);
 
-        if (user is null || !passwordValid || !user.Company.IsActive)
+        if (user is null || !passwordValid)
             return Result<LoginResponse>.Fail(AuthErrors.InvalidCredentials);
+
+        var authResult = user.CanAuthenticate();
+        if (authResult.IsFailure)
+            return Result<LoginResponse>.Fail(authResult.Error);
 
         var activeRefreshTokens = await _context.RefreshTokens
             .Where(rt =>
                 rt.UserId == user.Id &&
                 rt.RevokedAt == null &&
-                rt.ExpiresAt > DateTime.UtcNow)
-            .ToListAsync(ct);
+                rt.ExpiresAt > DateTimeOffset.UtcNow)
+            .ToListAsync();
 
         foreach (var token in activeRefreshTokens)
-        {
             token.Revoke();
-        }
 
         var (accessToken, accessExpiresAt) = _jwtTokenProvider.GenerateToken(user);
 
         var refreshTokenString = _jwtTokenProvider.GenerateRefreshToken();
-        var refreshExpiresAt = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationDays);
+        var refreshExpiresAt = DateTimeOffset.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationDays);
         var refreshToken = new RefreshToken(user.Id, user.CompanyId, refreshTokenString, refreshExpiresAt);
 
         _context.RefreshTokens.Add(refreshToken);
-        await _context.SaveChangesAsync(ct);
+        await _context.SaveChangesAsync();
 
         var response = new LoginResponse(
             accessToken,
@@ -85,7 +87,7 @@ public record LoginRequest(string Email, string Password);
 
 public record LoginResponse(
     string AccessToken,
-    DateTime AccessExpiresAt,
+    DateTimeOffset AccessExpiresAt,
     string RefreshToken,
-    DateTime RefreshExpiresAt
+    DateTimeOffset RefreshExpiresAt
 );

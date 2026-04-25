@@ -8,8 +8,8 @@ public class RefreshToken
     public Guid UserId { get; private set; }
     public Guid CompanyId { get; set; }
     public string Token { get; private set; } = null!;
-    public DateTime ExpiresAt { get; private set; }
-    public DateTime? RevokedAt { get; private set; }
+    public DateTimeOffset ExpiresAt { get; private set; }
+    public DateTimeOffset? RevokedAt { get; private set; }
     public DateTimeOffset CreatedAt { get; private set; }
     public bool Removed { get; private set; } = false;
 
@@ -18,7 +18,7 @@ public class RefreshToken
 
     protected RefreshToken() { }
 
-    public RefreshToken(Guid userId, Guid companyId, string token, DateTime expiresAt, string? deviceInfo = null)
+    public RefreshToken(Guid userId, Guid companyId, string token, DateTimeOffset expiresAt, string? deviceInfo = null)
     {
         Id = Guid.CreateVersion7();
         UserId = userId;
@@ -28,13 +28,13 @@ public class RefreshToken
         CreatedAt = DateTimeOffset.UtcNow;
     }
 
-    public bool IsExpired => DateTime.UtcNow > ExpiresAt;
+    public bool IsExpired => DateTimeOffset.UtcNow > ExpiresAt;
     public bool IsRevoked => RevokedAt.HasValue;
     public bool IsValid => !IsExpired && !IsRevoked;
 
     public void Revoke()
     {
-        RevokedAt = DateTime.UtcNow;
+        RevokedAt = DateTimeOffset.UtcNow;
         Removed = true;
     }
 }
