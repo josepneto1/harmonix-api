@@ -16,8 +16,8 @@ public class RefreshTokenDbConfig : IEntityTypeConfiguration<RefreshToken>
         builder.Property(rt => rt.UserId).HasColumnName("user_id").HasColumnType("uniqueidentifier");
         builder.Property(rt => rt.CompanyId).HasColumnName("company_id").HasColumnType("uniqueidentifier");
         builder.Property(rt => rt.Token).HasColumnName("token").IsRequired().HasMaxLength(256);
-        builder.Property(rt => rt.ExpiresAt).HasColumnName("expires_at").HasColumnType("datetime2").IsRequired();
-        builder.Property(rt => rt.RevokedAt).HasColumnName("revoked_at").HasColumnType("datetime2").IsRequired(false);
+        builder.Property(rt => rt.ExpiresAt).HasColumnName("expires_at").HasColumnType("datetimeoffset").IsRequired();
+        builder.Property(rt => rt.RevokedAt).HasColumnName("revoked_at").HasColumnType("datetimeoffset").IsRequired(false);
         builder.Property(rt => rt.CreatedAt).HasColumnName("created_at").HasColumnType("datetimeoffset").IsRequired();
 
         builder.HasIndex(rt => new { rt.Token, rt.CompanyId })
@@ -27,11 +27,8 @@ public class RefreshTokenDbConfig : IEntityTypeConfiguration<RefreshToken>
         builder.HasIndex(rt => rt.CompanyId).HasDatabaseName("idx_refresh_tokens_company_id");
         builder.HasIndex(rt => rt.ExpiresAt).HasDatabaseName("idx_refresh_tokens_expires_at");
 
-        builder.HasOne(rt => rt.User)
-            .WithMany(u => u.RefreshTokens)
-            .HasForeignKey(rt => rt.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
+        builder.HasOne(rt => rt.User).WithMany(u => u.RefreshTokens).HasForeignKey(rt => rt.UserId);
 
-        builder.HasQueryFilter(rt => !rt.Removed && rt.RevokedAt == null && rt.ExpiresAt > DateTime.UtcNow);
+        builder.HasQueryFilter(rt => !rt.Removed && rt.RevokedAt == null && rt.ExpiresAt > DateTimeOffset.UtcNow);
     }
 }

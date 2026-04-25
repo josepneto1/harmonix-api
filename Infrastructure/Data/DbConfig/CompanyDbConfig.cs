@@ -27,6 +27,6 @@ public class CompanyDbConfig : IEntityTypeConfiguration<Company>
 
         builder.HasIndex(c => c.Alias).IsUnique().HasDatabaseName("idx_companies_alias");
 
-        builder.HasMany(c => c.Users).WithOne(u => u.Company).HasForeignKey(u => u.CompanyId).OnDelete(DeleteBehavior.Restrict);
+        builder.HasMany(c => c.Users).WithOne(u => u.Company).HasForeignKey(u => u.CompanyId);
     }
 }

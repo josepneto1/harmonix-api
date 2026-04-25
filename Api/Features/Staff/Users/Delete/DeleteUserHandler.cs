@@ -17,14 +17,14 @@ public class DeleteUserHandler : BaseHandler<Guid, bool>
     protected override async Task<Result<bool>> HandleAsync(Guid id, CancellationToken ct)
     {
         var user = await _context.Users
-            .FirstOrDefaultAsync(c => c.Id == id && !c.Removed, ct);
+            .FirstOrDefaultAsync(c => c.Id == id && !c.Removed);
 
         if (user is null)
             return Result<bool>.Fail(CommonErrors.NotFound);
 
         user.Remove();
 
-        await _context.SaveChangesAsync(ct);
+        await _context.SaveChangesAsync();
 
         return Result<bool>.Success(true);
     }

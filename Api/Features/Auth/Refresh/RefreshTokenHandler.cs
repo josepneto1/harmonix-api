@@ -30,7 +30,7 @@ public class RefreshTokenHandler : BaseHandler<RefreshTokenRequest, RefreshToken
             .Where(rt => rt.Token == request.RefreshToken)
             .Include(rt => rt.User)
                 .ThenInclude(u => u.Company)
-            .FirstOrDefaultAsync(ct);
+            .FirstOrDefaultAsync();
 
         if (refreshToken is null || !refreshToken.IsValid)
             return Result<RefreshTokenResponse>.Fail(AuthErrors.InvalidRefreshToken);
@@ -42,19 +42,16 @@ public class RefreshTokenHandler : BaseHandler<RefreshTokenRequest, RefreshToken
         if (user is null || !user.Company.IsActive)
             return Result<RefreshTokenResponse>.Fail(AuthErrors.InvalidRefreshToken);
 
-        if (user is null || !user.Company.IsActive)
-            return Result<RefreshTokenResponse>.Fail(AuthErrors.InvalidRefreshToken);
-
         var (newAccessToken, accessExpiresAt) = _jwtTokenProvider.GenerateToken(user);
 
         var newRefreshTokenString = _jwtTokenProvider.GenerateRefreshToken();
-        var newRefreshExpiresAt = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationDays);
+        var newRefreshExpiresAt = DateTimeOffset.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationDays);
 
         var newRefreshToken = new RefreshToken(user.Id, user.CompanyId, newRefreshTokenString, newRefreshExpiresAt);
 
         _context.RefreshTokens.Add(newRefreshToken);
 
-        await _context.SaveChangesAsync(ct);
+        await _context.SaveChangesAsync();
 
         var response = new RefreshTokenResponse(
             newAccessToken,
@@ -72,6 +69,6 @@ public record RefreshTokenRequest(string RefreshToken);
 public record RefreshTokenResponse(
     string AccessToken,
     string RefreshToken,
-    DateTime AccessExpiresAt,
-    DateTime RefreshExpiresAt
+    DateTimeOffset AccessExpiresAt,
+    DateTimeOffset RefreshExpiresAt
 );

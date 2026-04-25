@@ -33,7 +33,7 @@ public class CreateUserHandler : BaseHandler<CreateUserRequest, CreateUserRespon
     {
         var company = await _context.Companies
             .AsNoTracking()
-            .FirstOrDefaultAsync(c => c.Id == request.CompanyId && !c.Removed, ct);
+            .FirstOrDefaultAsync(c => c.Id == request.CompanyId && !c.Removed);
 
         if (company is null)
             return Result<CreateUserResponse>.Fail(CommonErrors.NotFound);
@@ -57,7 +57,7 @@ public class CreateUserHandler : BaseHandler<CreateUserRequest, CreateUserRespon
         user.SetPasswordHash(passwordHash);
 
         _context.Users.Add(user);
-        await _context.SaveChangesAsync(ct);
+        await _context.SaveChangesAsync();
 
         var response = new CreateUserResponse(
             user.Id,

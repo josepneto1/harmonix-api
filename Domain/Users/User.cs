@@ -64,4 +64,12 @@ public class User : BaseEntity
     }
 
     public void SetPasswordHash(string hash) => PasswordHash = hash;
+
+    public Result CanAuthenticate()
+    {
+        if (Removed || Company.Removed || !Company.IsActive || Company.ExpirationDate <= DateTimeOffset.UtcNow)
+            return Result.Fail(AuthErrors.InvalidCredentials);
+
+        return Result.Success();
+    }
 }

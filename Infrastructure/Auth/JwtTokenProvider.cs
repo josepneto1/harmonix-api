@@ -15,9 +15,9 @@ public class JwtTokenProvider
         _jwtSettings = jwtSettings;
     }
 
-    public (string Token, DateTime ExpiresAt) GenerateToken(User user)
+    public (string Token, DateTimeOffset ExpiresAt) GenerateToken(User user)
     {
-        var expiresAt = DateTime.UtcNow.AddMinutes(_jwtSettings.AccessTokenExpirationMinutes);
+        var expiresAt = DateTimeOffset.UtcNow.AddMinutes(_jwtSettings.AccessTokenExpirationMinutes);
 
         var claims = new[]
         {
@@ -34,7 +34,7 @@ public class JwtTokenProvider
             issuer: _jwtSettings.Issuer,
             audience: _jwtSettings.Audience,
             claims: claims,
-            expires: expiresAt,
+            expires: expiresAt.UtcDateTime,
             signingCredentials: credentials
         );
 
