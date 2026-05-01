@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using Harmonix.Application.Common;
+using Harmonix.Common;
 using Harmonix.Domain.Auth;
 using Harmonix.Domain.Common;
 using Harmonix.Domain.Common.Errors;

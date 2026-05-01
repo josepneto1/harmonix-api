@@ -1,9 +1,10 @@
-﻿using Harmonix.Api.Common.Extensions;
-using Harmonix.Api.Features.Staff.Users.Create;
+﻿using Harmonix.Api.Features.Staff.Users.Create;
 using Harmonix.Api.Features.Staff.Users.Delete;
 using Harmonix.Api.Features.Staff.Users.Get;
 using Harmonix.Api.Features.Staff.Users.List;
 using Harmonix.Api.Features.Staff.Users.Update;
+using Harmonix.Common;
+using Harmonix.Domain.Users.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,7 +12,7 @@ namespace Harmonix.Api.Features.Staff.Users;
 
 [ApiController]
 [Route("api/staff/[controller]")]
-[Authorize(Roles = "SysAdmin")]
+[Authorize(Roles = nameof(Role.SysAdmin))]
 public class UsersController : ControllerBase
 {
     [HttpPost("create")]

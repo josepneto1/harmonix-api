@@ -1,10 +1,11 @@
-﻿using Harmonix.Api.Common.Extensions;
-using Harmonix.Api.Features.Staff.Companies.Activate;
+﻿using Harmonix.Api.Features.Staff.Companies.Activate;
 using Harmonix.Api.Features.Staff.Companies.Create;
 using Harmonix.Api.Features.Staff.Companies.Delete;
 using Harmonix.Api.Features.Staff.Companies.Get;
 using Harmonix.Api.Features.Staff.Companies.List;
 using Harmonix.Api.Features.Staff.Companies.Update;
+using Harmonix.Common;
+using Harmonix.Domain.Users.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,7 +13,7 @@ namespace Harmonix.Api.Features.Staff.Companies;
 
 [ApiController]
 [Route("api/staff/[controller]")]
-[Authorize(Roles = "SysAdmin")]
+[Authorize(Roles = nameof(Role.SysAdmin))]
 public class CompaniesController : ControllerBase
 {
     [HttpGet("company/{id:guid}")]

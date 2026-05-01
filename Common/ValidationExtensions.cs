@@ -2,7 +2,7 @@
 using Harmonix.Domain.Common.Errors;
 using Harmonix.Domain.Common.Errors.Enums;
 
-namespace Harmonix.Application.Extensions;
+namespace Harmonix.Common;
 
 public static class ValidationExtensions
 {

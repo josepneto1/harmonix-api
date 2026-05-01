@@ -1,9 +1,9 @@
-﻿using Harmonix.Application.Common;
-using Harmonix.Domain.Common.Errors;
+﻿using Harmonix.Domain.Common.Errors;
 using Harmonix.Domain.Common;
 using Harmonix.Domain.Users.Enums;
 using Harmonix.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Harmonix.Common;
 
 namespace Harmonix.Api.Features.Staff.Users.Get;
 

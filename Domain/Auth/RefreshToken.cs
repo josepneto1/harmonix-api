@@ -6,9 +6,9 @@ public class RefreshToken
 {
     public Guid Id { get; private set; }
     public Guid UserId { get; private set; }
-    public Guid CompanyId { get; set; }
+    public Guid CompanyId { get; private set; }
     public string Token { get; private set; } = null!;
-    public DateTimeOffset ExpiresAt { get; private set; }
+    public DateTimeOffset ExpiresAt { get; }
     public DateTimeOffset? RevokedAt { get; private set; }
     public DateTimeOffset CreatedAt { get; private set; }
     public bool Removed { get; private set; } = false;

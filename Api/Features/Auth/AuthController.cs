@@ -1,7 +1,7 @@
-using Harmonix.Api.Common.Extensions;
 using Harmonix.Api.Features.Auth.Login;
 using Harmonix.Api.Features.Auth.Logout;
 using Harmonix.Api.Features.Auth.Refresh;
+using Harmonix.Common;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Harmonix.Api.Features.Auth;
@@ -20,15 +20,7 @@ public class AuthController : ControllerBase
 
         var response = result.Data!;
 
-        Response.Cookies.Append("refreshToken", response.RefreshToken, new CookieOptions
-        {
-            HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.None,
-            Expires = response.RefreshExpiresAt,
-            Path = "/"
-        });
-
+        Response.Cookies.Append("refreshToken", response.RefreshToken, BuildRefreshCookieOptions(response.RefreshExpiresAt));
 
         return Ok(new { response.AccessToken, response.AccessExpiresAt });
     }
@@ -48,20 +40,9 @@ public class AuthController : ControllerBase
 
         var response = result.Data!;
 
-        Response.Cookies.Append("refreshToken", response.RefreshToken, new CookieOptions
-        {
-            HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.None,
-            Expires = response.RefreshExpiresAt,
-            Path = "/"
-        });
+        Response.Cookies.Append("refreshToken", response.RefreshToken, BuildRefreshCookieOptions(response.RefreshExpiresAt));
 
-        return Ok(new
-        {
-            accessToken = response.AccessToken,
-            expiresAt = response.AccessExpiresAt,
-        });
+        return Ok(new { accessToken = response.AccessToken, expiresAt = response.AccessExpiresAt, });
     }
 
     [HttpPost("logout")]
@@ -74,14 +55,20 @@ public class AuthController : ControllerBase
             await handler.ExecuteAsync(new LogoutRequest(refreshToken), ct);
         }
 
-        Response.Cookies.Delete("refreshToken", new CookieOptions
-        {
-            Path = "/",
-            Secure = true,
-            SameSite = SameSiteMode.None,
-            HttpOnly = true
-        });
+        Response.Cookies.Delete("refreshToken", BuildRefreshCookieOptions());
 
         return Ok();
+    }
+    
+    private static CookieOptions BuildRefreshCookieOptions(DateTimeOffset? expires = null)
+    {
+        return new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.None,
+            Expires = expires,
+            Path = "/"
+        };
     }
 }

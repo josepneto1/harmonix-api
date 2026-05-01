@@ -1,8 +1,7 @@
 ﻿using FluentValidation;
-using Harmonix.Application.Extensions;
 using Harmonix.Domain.Common;
 
-namespace Harmonix.Application.Common;
+namespace Harmonix.Common;
 
 public interface IHandler
 {

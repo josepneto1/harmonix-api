@@ -2,7 +2,7 @@
 using Harmonix.Domain.Common.Errors.Enums;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Harmonix.Api.Common.Extensions;
+namespace Harmonix.Common;
 
 public static class ResultExtensions
 {
