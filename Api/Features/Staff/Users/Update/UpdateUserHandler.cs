@@ -1,9 +1,10 @@
 ﻿using FluentValidation;
-using Harmonix.Application.Common;
-using Harmonix.Domain.Common.Errors;
+using Harmonix.Common;
 using Harmonix.Domain.Common;
+using Harmonix.Domain.Common.Errors;
 using Harmonix.Domain.Common.Services;
 using Harmonix.Domain.Common.ValueObjects;
+using Harmonix.Domain.Users.Enums;
 using Harmonix.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -57,3 +58,13 @@ public class UpdateUserHandler : BaseHandler<UpdateUserRequest, UpdateUserRespon
         return Result<UpdateUserResponse>.Success(response);
     }
 }
+
+public record UpdateUserRequest
+{
+    public Guid Id { get; init; }
+    public string? Name { get; init; }
+    public string? Email { get; init; }
+    public Role? Role { get; init; }
+};
+
+public record UpdateUserResponse(Guid Id, string Name);

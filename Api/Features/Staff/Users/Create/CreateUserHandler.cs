@@ -1,9 +1,10 @@
 ﻿using FluentValidation;
-using Harmonix.Application.Common;
+using Harmonix.Common;
 using Harmonix.Domain.Common;
 using Harmonix.Domain.Common.Errors;
 using Harmonix.Domain.Common.Services;
 using Harmonix.Domain.Users;
+using Harmonix.Domain.Users.Enums;
 using Harmonix.Domain.Users.ValueObjects;
 using Harmonix.Infrastructure.Auth;
 using Harmonix.Infrastructure.Data;
@@ -71,3 +72,20 @@ public class CreateUserHandler : BaseHandler<CreateUserRequest, CreateUserRespon
         return Result<CreateUserResponse>.Success(response);
     }
 }
+
+public record CreateUserRequest(
+    Guid CompanyId,
+    string Name,
+    string Email,
+    string Password,
+    Role Role
+);
+
+public record CreateUserResponse(
+    Guid Id,
+    Guid CompanyId,
+    string Name,
+    string Email,
+    Role Role,
+    DateTimeOffset CreatedAt
+);

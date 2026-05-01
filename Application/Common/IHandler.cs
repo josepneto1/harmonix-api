@@ -1,3 +1,0 @@
-﻿namespace Harmonix.Application.Common;
-
-

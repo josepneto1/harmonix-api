@@ -1,5 +1,5 @@
 using FluentValidation;
-using Harmonix.Application.Common;
+using Harmonix.Common;
 using Harmonix.Infrastructure;
 using Harmonix.Infrastructure.Auth;
 using Harmonix.Infrastructure.Data;

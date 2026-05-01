@@ -1,10 +1,10 @@
-﻿using Harmonix.Application.Common;
-using Harmonix.Domain.Common.Errors;
+﻿using Harmonix.Domain.Common.Errors;
 using Harmonix.Domain.Auth;
 using Harmonix.Domain.Common;
 using Harmonix.Infrastructure.Auth;
 using Harmonix.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Harmonix.Common;
 
 namespace Harmonix.Api.Features.Auth.Refresh;
 

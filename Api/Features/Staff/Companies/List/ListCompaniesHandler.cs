@@ -1,4 +1,4 @@
-﻿using Harmonix.Application.Common;
+﻿using Harmonix.Common;
 using Harmonix.Domain.Common;
 using Harmonix.Domain.Companies;
 using Harmonix.Infrastructure.Data;

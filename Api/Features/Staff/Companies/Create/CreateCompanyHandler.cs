@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using Harmonix.Application.Common;
+using Harmonix.Common;
 using Harmonix.Domain.Common;
 using Harmonix.Domain.Companies;
 using Harmonix.Domain.Companies.Services;
@@ -54,3 +54,13 @@ public class CreateCompanyHandler : BaseHandler<CreateCompanyRequest, CreateComp
         return Result<CreateCompanyResponse>.Success(response);
     }
 }
+
+public record CreateCompanyRequest(string Name, string Alias, DateTimeOffset ExpirationDate);
+
+public record CreateCompanyResponse(
+    Guid Id,
+    string Name,
+    string Alias,
+    DateTimeOffset CreatedAt,
+    DateTimeOffset ExpirationDate
+);
