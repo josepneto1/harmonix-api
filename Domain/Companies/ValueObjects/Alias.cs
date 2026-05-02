@@ -2,7 +2,7 @@
 
 namespace Harmonix.Domain.Companies.ValueObjects;
 
-public sealed record Alias : IValueObject<Alias, string>
+public sealed record Alias
 {
     private const int MinLength = 3;
     private const int MaxLength = 30;
@@ -30,6 +30,4 @@ public sealed record Alias : IValueObject<Alias, string>
             .Replace(" ", "")
             .ToLower();
     }
-
-    public static Alias FromDbConfig(string value) => new(value);
 }

@@ -47,7 +47,7 @@ public class User : BaseEntity
         if (!Enum.IsDefined(role))
             return Result<User>.Fail(CommonErrors.InvalidRole);
 
-        var user = new User(companyId, name, emailResult.Data!, role);
+        var user = new User(companyId, name, emailResult.Data, role);
         return Result<User>.Success(user);
     }
 

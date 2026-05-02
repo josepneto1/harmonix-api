@@ -4,7 +4,7 @@ using System.Net.Mail;
 
 namespace Harmonix.Domain.Common.ValueObjects;
 
-public sealed record Email : IValueObject<Email, string>
+public sealed record Email
 {
     private const int MaxLength = 255;
     public string Value { get; }
@@ -33,6 +33,4 @@ public sealed record Email : IValueObject<Email, string>
             return false;
         }
     }
-
-    public static Email FromDbConfig(string value) => new(value);
 }

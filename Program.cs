@@ -71,4 +71,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
+await DatabaseSeeder.SeedAsync(app.Services);
+
 app.Run();

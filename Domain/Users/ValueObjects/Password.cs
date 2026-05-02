@@ -4,7 +4,7 @@ using Harmonix.Domain.Common.Validations;
 
 namespace Harmonix.Domain.Users.ValueObjects;
 
-public sealed record Password : IValueObject<Password, string>
+public sealed record Password
 {
     private const int MinLength = 8;
     private const int MaxLength = 20;
@@ -19,6 +19,4 @@ public sealed record Password : IValueObject<Password, string>
 
         return Result<Password>.Success(new Password(password));
     }
-
-    public static Password FromDbConfig(string value) => new(value);
 }
