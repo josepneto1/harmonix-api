@@ -41,7 +41,7 @@ public class UpdateCompanyHandler : BaseHandler<UpdateCompanyRequest, UpdateComp
             if (aliasResult.IsFailure)
                 return Result<UpdateCompanyResponse>.Fail(aliasResult.Error);
 
-            alias = aliasResult.Data!;
+            alias = aliasResult.Data;
 
             if (alias != company.Alias)
             {
