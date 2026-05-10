@@ -14,5 +14,5 @@ public sealed class EmailUniqueChecker : IEmailUniqueChecker
     public async Task<bool> IsUniqueAsync(Email email)
         => !await _context.Users
             .AsNoTracking()
-            .AnyAsync(u => u.Email == email);
+            .AnyAsync(u => u.Email.Value == email.Value);
 }

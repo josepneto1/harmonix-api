@@ -17,6 +17,6 @@ public sealed class AliasUniqueChecker : IAliasUniqueChecker
         return !await _context.Companies
             .IgnoreQueryFilters()
             .AsNoTracking()
-            .AnyAsync(c => c.Alias == alias);
+            .AnyAsync(c => c.Alias.Value == alias.Value);
     }
 }

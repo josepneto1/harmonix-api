@@ -69,11 +69,11 @@ public class ListCompaniesHandler : BaseHandler<ListCompaniesRequest, ListCompan
                 ? query.OrderByDescending(c => c.Alias)
                 : query.OrderBy(c => c.Alias),
 
-            "createdat" => isDesc
+            "createdAt" => isDesc
                 ? query.OrderByDescending(c => c.CreatedAt)
                 : query.OrderBy(c => c.CreatedAt),
 
-            "expirationdate" => isDesc
+            "expirationDate" => isDesc
                 ? query.OrderByDescending(c => c.ExpirationDate)
                 : query.OrderBy(c => c.ExpirationDate),
 
@@ -99,10 +99,8 @@ public record ListCompaniesResponse(
     List<CompanyView> Data,
     int Page,
     int PageSize,
-    int TotalCount)
-{
-    public int TotalPages => (int)Math.Ceiling((double)TotalCount / PageSize);
-}
+    int TotalCount
+);
 
 public record CompanyView(
     Guid Id,
