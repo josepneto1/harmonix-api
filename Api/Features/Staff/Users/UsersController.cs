@@ -33,9 +33,12 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("list")]
-    public async Task<IActionResult> ListUsers(ListUsersHandler handler, CancellationToken ct)
+    public async Task<IActionResult> ListUsers(
+            [FromQuery] ListUsersRequest request,
+            ListUsersHandler handler, 
+            CancellationToken ct)
     {
-        var result = await handler.ExecuteAsync(ct);
+        var result = await handler.ExecuteAsync(request, ct);
         return this.GetResult(result);
     }
 

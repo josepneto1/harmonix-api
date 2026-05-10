@@ -40,7 +40,7 @@ public class LoginHandler : BaseHandler<LoginRequest, LoginResponse>
             .AsNoTracking()
             .IgnoreQueryFilters()
             .Include(u => u.Company)
-            .FirstOrDefaultAsync(u => u.Email == userEmailResult.Data);
+            .FirstOrDefaultAsync(u => u.Email.Value == userEmailResult.Data.Value);
 
         var passwordHash = user?.PasswordHash ?? _passwordHasher.FakeHash;
 

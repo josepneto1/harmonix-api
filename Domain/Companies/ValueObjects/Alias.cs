@@ -23,11 +23,5 @@ public sealed record Alias
         return Result<Alias>.Success(new Alias(normalized));
     }
 
-    private static string NormalizeAlias(string alias)
-    {
-        return alias
-            .Trim()
-            .Replace(" ", "")
-            .ToLower();
-    }
+    private static string NormalizeAlias(string alias) => alias.Trim().Replace(" ", string.Empty).ToLower();
 }
